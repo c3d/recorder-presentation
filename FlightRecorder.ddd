@@ -137,8 +137,8 @@ base_slide "What is this flight recorder thing anyway?",
         ** "... along with the most recent high-frequency events"
 
         paragraph " "
-        * "Clone in your project, include one file"
-        ** "Add a couple of files in project"
+        * "Easiest way: clone as submodule"
+        ** "One header, a couple of source files"
 
         paragraph " "
         * "Designed to work mostly like printf"
@@ -291,13 +291,13 @@ base_slide "Caveat #1: Formatting happens only if/when printing",
             color redhat_red1, 20%
             rectangle 235, -225, 170, 50
 
-        only_at 4,
+        only_at 5,
             code_box 0, -50, 800, 400, "Dead pointer",
                 font_size 22
                 text load_text "recorder-bad.txt"
             stamp redhat_red2, "Bad!"
 
-        only_at 5,
+        only_at 6,
             code_box 0, -50, 800, 400, "Solid pointer",
                 font_size 22
                 text load_text "recorder-good.txt"
@@ -517,7 +517,7 @@ base_slide "Recorder dynamic configuration (tweaks)",
                 at_step 6
                 paragraph "intptr_t value = RECORDER_TRACE(channel_write);"
                 at_step 7
-                paragraph "intptr_t mask  = RECORDER_TwEAK(recorder_signals);"
+                paragraph "intptr_t mask  = RECORDER_TWEAK(recorder_signals);"
 
 
 // ----------------------------------------------------------------------------
@@ -560,6 +560,13 @@ base_slide "Recorder exporting and graphing",
             code_box -300, -280, 1400, 220, "Graphing tool",
                 font_size 30
                 paragraph "% recorder_scope frame_size queue_length"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Demo",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "The proof of the pudding is that you eat it"
 
 
 // ----------------------------------------------------------------------------
