@@ -699,3 +699,12 @@ section_slide "Thank you",
         texture "Fdr_sidefront.jpg"
         color "white"
         rounded_rectangle 0, 0, texture_width, texture_height, 80
+
+    contents 0,
+        text_box 500, -400, 600, 200,
+            style "story"
+            font_size 30
+            anchor
+                image -80, -40, 10%, 10%, "Tao3D.png"
+            paragraph "This Tao3D presentation is available at"
+            paragraph "https://github.com/c3d/recorder-presentation"
