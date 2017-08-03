@@ -460,7 +460,7 @@ tao "grey"                              -> "#555"
 //
 // ============================================================================
 
-TOTAL_DURATION -> 1800 // 30 minutes
+TOTAL_DURATION -> 1200 // 20 minutes
 START_TIME     -> 0.0
 
 key "Right" -> skip 1
@@ -471,3 +471,8 @@ key "Backspace" ->
     goto_page 1
 once
     START_TIME := time
+
+contents 0,
+    color "lightgray"
+    rectangle 0, -482, 1700 * (time - START_TIME) / TOTAL_DURATION, 2
+    rectangle 0, -478, 1700 * page_number / page_count, 2
