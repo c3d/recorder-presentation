@@ -1,0 +1,2 @@
+RECORDER(channel_write, 128, "Channel writes");
+RECORDER(write_stats,    64, "Write statistics");

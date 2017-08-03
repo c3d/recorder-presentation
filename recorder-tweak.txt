@@ -1,0 +1,9 @@
+if (RECORDER_TRACE(gst_queue_max_length) &&
+    decoder->decoding_queue->length > RECORDER_TRACE(gst_queue_max_length))
+{
+    RECORD(gst_queue_max_length,
+           "GST queue length is %lu, above max %lu, clearing",
+           decoder->decoding_queue->length,
+           RECORDER_TRACE(gst_queue_max_length));
+    ...
+}

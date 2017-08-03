@@ -1,0 +1,4 @@
+const char *animal[] = { "kangaroo", "marsupilami" };
+RECORD(my_recorder,
+       "My favorite animal is the %s",
+       animal[a % 2]);

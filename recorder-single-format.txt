@@ -1,0 +1,2 @@
+RECORD(size_stats, "Initial size %f length %lu", size, length);
+RECORD(size_stats, "Secondary size %f length %lu", size2, length2);

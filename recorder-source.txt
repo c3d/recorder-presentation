@@ -1,0 +1,21 @@
+RECORDER(channel_write, 128, "Channel writes");
+RECORDER(write_stats,    64, "Write statistics");
+
+/* coroutine context */
+static void spice_channel_write(SpiceChannel *channel, const void *data, size_t len)
+{
+    RECORD(channel_write, "Write %zu bytes to %s", len, channel->priv->name);
+    RECORD_TIMING_BEGIN(write_stats);
+#ifdef HAVE_SASL
+    SpiceChannelPrivate *c = channel->priv;
+
+    if (c->sasl_conn)
+        spice_channel_flush_sasl(channel, data, len);
+    else
+#endif
+        spice_channel_flush_wire(channel, data, len);
+    channel->priv->total_written_bytes += len;
+    RECORD_TIMING_END(write_stats, "Write", "bytes", len);
+    RECORD(channel_write, "Wrote %zu bytes to %s, total %zu",
+           len, channel->priv->name, channel->priv->total_written_bytes);
+}

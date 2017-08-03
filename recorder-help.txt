@@ -1,0 +1,16 @@
+% RECORDER_TRACES=help spicy -h turbo -p 5900
+List of available recorders:
+gst_queue_max_length : Report if too many items in GST queue
+     gst_queue_stats : GST queue statistics
+          new_sample : Processing incoming GStreamer samples
+         frame_timer : Timer used for rendering
+gst_schedule_frame_warning*: Warning about late frames
+gst_schedule_frame_time : GStreamer scheduled frames
+  gst_schedule_frame : GStreamer scheduled frames
+       display_frame : Display frames
+             channel : Spice channel messages
+          read_stats : Read statistics for
+        channel_read : Read from spice channels
+         write_stats : Write statistics
+       channel_write : Channel writes
+             mm_time : Set and get multimedia time

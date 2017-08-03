@@ -1,0 +1,3 @@
+RECORD(channel_write,
+       "Write %zu bytes to %s",
+       len, channel->priv->name);

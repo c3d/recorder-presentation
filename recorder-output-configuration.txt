@@ -1,0 +1,4 @@
+typedef unsigned (*recorder_show_fn) (const char *text,size_t len,void *output);
+
+extern void *             recorder_configure_output(void *output);
+extern recorder_show_fn   recorder_configure_show(recorder_show_fn show);

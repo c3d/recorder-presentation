@@ -1,0 +1,37 @@
+#define RECORD(Name, Format,...)                                        \
+    RECORD_(RECORD,RECORD_COUNT_(__VA_ARGS__),Name,Format,##__VA_ARGS__)
+#define RECORD_(RECORD,RCOUNT,Name,Format,...)                          \
+    RECORD__(RECORD,RCOUNT,Name,Format,## __VA_ARGS__)
+#define RECORD__(RECORD,RCOUNT,Name,Format,...)                         \
+    RECORD##RCOUNT(Name,Format,##__VA_ARGS__)
+#define RECORD_COUNT_(...)      RECORD_COUNT__(Dummy,##__VA_ARGS__,_X,_X,_12,_11,_10,_9,_8,_7,_6,_5,_4,_3,_2,_1,_0)
+#define RECORD_COUNT__(Dummy,_0,_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,_11,_12,_13,_N,...)      _N
+
+#define RECORD_0(Name, Format)                          \
+    recorder_append(RECORDER_INFO(Name),                \
+                    RECORDER_SOURCE_LOCATION,           \
+                    Format, 0, 0, 0, 0)
+#define RECORD_1(Name, Format, a)                       \
+    recorder_append(RECORDER_INFO(Name),                \
+                    RECORDER_SOURCE_LOCATION,           \
+                    Format,                             \
+                    RECORDER_ARG(a), 0, 0, 0)
+
+// 10 other super-boring variants here...
+
+#define RECORD_12(Name, Format, a,b,c,d,e,f,g,h,i,j,k,l)        \
+    recorder_append3(RECORDER_INFO(Name),                       \
+                     RECORDER_SOURCE_LOCATION,                  \
+                     Format,                                    \
+                     RECORDER_ARG(a),                           \
+                     RECORDER_ARG(b),                           \
+                     RECORDER_ARG(c),                           \
+                     RECORDER_ARG(d),                           \
+                     RECORDER_ARG(e),                           \
+                     RECORDER_ARG(f),                           \
+                     RECORDER_ARG(g),                           \
+                     RECORDER_ARG(h),                           \
+                     RECORDER_ARG(i),                           \
+                     RECORDER_ARG(j),                           \
+                     RECORDER_ARG(k),                           \
+                     RECORDER_ARG(l))

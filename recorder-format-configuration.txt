@@ -1,0 +1,8 @@
+typedef void (*recorder_format_fn)(recorder_show_fn show,
+                                   void *output,
+                                   const char *label,
+                                   const char *location,
+                                   uintptr_t order,
+                                   uintptr_t timestamp,
+                                   const char *message);
+extern recorder_format_fn recorder_configure_format(recorder_format_fn format);

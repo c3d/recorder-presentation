@@ -1,0 +1,9 @@
+libspice_common_la_SOURCES =            \
+        backtrace.c                     \
+        backtrace.h                     \
+        [...]
+        recorder/recorder.c             \
+        recorder/recorder.h             \
+        recorder/ring.c                 \
+        recorder/ring.h                 \
+        $(NULL)

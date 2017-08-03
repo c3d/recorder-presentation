@@ -1,0 +1,3 @@
+char *str = strdup(some_input);
+RECORD(my_recorder, "The value of str is %s", str);
+free(str);

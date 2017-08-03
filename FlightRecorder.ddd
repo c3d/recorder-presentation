@@ -1,0 +1,694 @@
+// ----------------------------------------------------------------------------
+main_title_slide "Main title",
+// ----------------------------------------------------------------------------
+    title "A flight recorder for C/C++ programs"
+    subtitle
+        paragraph "https://github.com/c3d/recorder"
+        italic
+        bold
+        paragraph "Instrumentation that is always there"
+        paragraph "is there when you need it"
+    presentation_author "Christophe de Dinechin (dinechin@redhat.com)"
+
+    picture
+        translate 600, 450, 20
+        rotate_z 8
+        scale 70%
+        texture "Fdr_sidefront.jpg"
+        color "white"
+        rounded_rectangle 0, 0, texture_width, texture_height, 80
+
+
+// ----------------------------------------------------------------------------
+base_slide "Why a flight recorder?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Did you ever wish you had more info about a crash?"
+    stepping
+    story
+        vertical_align 0
+
+        * "My program crashed, but I don't know why"
+        ** "Think! What was I doing?"
+        ** "Some idiot hit the 'any' key at the wrong time"
+
+        paragraph " "
+        * "I wish I could reproduce"
+        ** "Heisenbugs, bugs that happen only once"
+        ** "Some idiot has better things to do than reproduce for me"
+
+        paragraph " "
+        * "This bug has been opened for too long, let's close it"
+        ** "Unsolved mysteries, part CLXXVII"
+        ** "Do you want to make your customers sad?"
+
+    right_picture
+        draw_image_for_step with 1..9
+        draw_image_for_step N:integer ->
+            image_only_at N,
+                rotate_z 7 * sin (2 * N)
+                texture image_collection at N
+                scale min(750.0 / texture_width, 640.0 / texture_height)
+                rectangle texture_width, texture_height
+        image_collection -> "ArianeExplosion.jpg", "DoryAward.jpg", "TheUniverseIsWinning.jpg", "cant-reproduce-a-defect.jpg", "heisenbugs.jpg", "idiots-vs-idiots.jpg", "Problem Solved.jpg", "bug-key.jpg", "CryBaby.jpg"
+
+
+// ----------------------------------------------------------------------------
+base_slide "What does a flight recorder bring?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Collecting information about problems before they happen"
+    stepping
+    story
+        vertical_align 0
+
+        * "Record information while a program is running"
+        ** { text "To print it "; red "when needed"; text ", e.g. on signal" }
+        ** "Can print information recorded before crash"
+
+        paragraph " "
+        * "Record "; red "continuously"
+        ** {text "Instrumentation is "; red "always there"; text " and "; red "always on" }
+        ** "It's there when you need it"
+
+        paragraph " "
+        * "Once it's there, we can do more"
+        ** { text "Run-time configuration, e.g. to "; red "trace"; text " events"}
+        ** "Continuous measurements and graphing"
+        ** { red "One instrumentation, multiple uses" }
+
+    picture
+        only_at 2,
+            code_box 0, -100, 1400, 400, "Recorder Crash Dump",
+                font_size 16
+                paragraph load_text "crash.txt"
+
+        only_at 3,
+            code_box 0, -100, 1400, 400, "Recorder Crash Dump",
+                font_size 16
+                mark_crash load_text "crash.txt"
+
+        only_at 4,
+            code_box 450, 50, 900, 700, "Recorder instrumentation",
+                font_size 18
+                text load_text "recorder-source.txt"
+
+        only_at 5,
+            code_box 450, 50, 900, 700, "Recorder instrumentation",
+                font_size 18
+                mark_recorder load_text "recorder-source.txt"
+
+        only_at 8,
+            code_box 350, -100, 1000, 400, "Runtime configuration",
+                font_size 18
+                paragraph load_text "spice-traces.txt"
+
+        only_at 9,
+            locally
+                color "white"
+                translate_x 350
+                rotate_z -5
+                image 0, 0, 50%, 50%, "170718-Reconverge.png"
+
+
+    mark_crash T:text ->
+        regexp_parse_text T,
+            - "[^\n]*signals: Received signal.*\n"  -> red regexp_captured 0
+            - "[^\n]*Recorder dump.*\n"             -> green regexp_captured 0
+            - ".*\n"                                -> text regexp_captured 0
+
+    mark_recorder T:text ->
+        regexp_parse_text T,
+            - "[^\n]*RECORD.*\n"                    -> red regexp_captured 0
+            - ".*\n"                                -> text regexp_captured 0
+
+
+// ----------------------------------------------------------------------------
+base_slide "What is this flight recorder thing anyway?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Continuously record data in multiple circular buffers with lock-free updates"
+    stepping
+
+    story
+        * "Record data continuously in circular buffers"
+        ** "Multiple buffers record diffent types of events at different speed"
+        ** "Makes it possible to preserve old, important records..."
+        ** "... along with the most recent high-frequency events"
+
+        paragraph " "
+        * "Clone in your project, include one file"
+        ** "Add a couple of files in project"
+
+        paragraph " "
+        * "Designed to work mostly like printf"
+        ** "Begins with the recorder name"
+        ** "Standard printf-style format"
+        ** "Makes it easy to port existing code"
+
+        paragraph " "
+        * "But with a few important caveats"
+
+    right_picture
+        image_only_at 1..4,
+            circular_buffer 6 * page_time,
+                line_color redhat_red1
+                ellipse 0, 0, 400, 400
+        image_only_at 2..4,
+            circular_buffer 0.8 * page_time,
+                line_color redhat_green1
+                ellipse 200, 220, 350, 350
+            circular_buffer 121 * page_time,
+                line_color redhat_blue1
+                ellipse -300, -200, 280, 280
+        image_only_at 3..4,
+            color redhat_red1
+            buffer_record 3, 4, 8, 10, 13
+            color redhat_green1, 1 - fade_between(smooth_step, 3, 3) * sin(5*time)
+            buffer_record 1, 2, 5
+            color redhat_blue1, 1 - fade_between(smooth_step, 4, 4) * sin(5*time)
+            buffer_record 6, 7, 9, 11, 12, 14, 15, 16
+
+        only_at 5,
+            code_box -300, -200, 1000, 400, "Adding recorder as submodule",
+                font_size 28
+                paragraph "git submodule add https://github.com/c3d/recorder.git "
+
+        only_at 6,
+            code_box 0, -100, 700, 400, "Changes to Makefile.am",
+                font_size 28
+                paragraph load_text "recorder-makefile.txt"
+            code_box 0, 200, 700, 400, "Recorder header file",
+                font_size 28
+                paragraph "#include ""recorder/recorder.h"""
+
+        only_at 7,
+            code_box 0, 0, 600, 200, "Recorder example",
+                font_size 28
+                paragraph load_text "recorder-example.txt"
+        only_at 8,
+            code_box 0, 0, 600, 200, "Recorder name",
+                font_size 28
+                mark_channel_write load_text "recorder-example.txt"
+        only_at 9,
+            code_box 0, 0, 600, 400, "Prinrf-style format",
+                font_size 28
+                mark_printf_format load_text "recorder-example.txt"
+
+        only_at 9,
+            code_box 0, 0, 600, 400, "Printf-style format",
+                font_size 28
+                mark_printf_format load_text "recorder-example.txt"
+
+        only_at 10,
+            code_box -50, -150, 900, 400, "Porting existing code",
+                font_size 22
+                text load_text "porting-example.txt"
+
+        only_at 11,
+            code_box 0, -50, 800, 400, "Dead pointer",
+                font_size 22
+                text load_text "recorder-bad.txt"
+            stamp redhat_red2, "Bad!"
+
+        circular_buffer Angle, Body ->
+            circular_buffer_angle -> 0
+            circular_buffer_angle := integer Angle
+            frame_texture 256, 256,
+                shader_program
+                    fragment_shader_file "angle_shader.fs"
+                shader_set angle := circular_buffer_angle / 64.0
+                shader_set resolution := 256, 256
+                color "white"
+                rectangle 256, 256
+            color "transparent"
+            line_width 30
+            Body
+
+        buffer_record X, Y -> buffer_record X; buffer_record Y
+        buffer_record Y ->
+            locally
+                translate -50, 400 - 40 * Y, 15
+                rectangle 320, 35
+                locally
+                    color "#777", 30%
+                    rectangle 320, 35
+                text_box 0, 0, 310, 30,
+                    color "white"
+                    font "Overpass", "Arial", 16, bold
+                    text "Record #" & Y
+
+         mark_channel_write T:text ->
+             regexp_parse_text T,
+                 - "channel_write"      -> red regexp_captured 0
+                 - "."                  -> text regexp_captured 0
+
+         mark_printf_format T:text ->
+             regexp_parse_text T,
+                 - """.*"""             -> red regexp_captured 0
+                 - "."                  -> text regexp_captured 0
+
+
+// ----------------------------------------------------------------------------
+base_slide "Caveat #1: Formatting happens only if/when printing",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Do not record strings that may not be valid at printing time"
+    stepping
+
+    story
+        * "Data is only recorded, not formatted yet"
+        ** "The recorder entry contains copies of your data"
+        ** "Strings are not copied, only pointers are"
+
+        paragraph " "
+        * "Formatting happens only when record is dumped"
+        ** "At that time, all string must still be valid"
+        ** "Not a problem for C constant strings"
+
+    right_picture
+        image_only_at 1..3,
+            code_box -100, 200, 600, 400, "Recorder example",
+                font_size 28
+                paragraph load_text "recorder-example.txt"
+        image_only_at 2..3,
+            image_box 100, -150, 600, 400,
+                translate_y 175
+                record_entry "Timestamp=3.523262s", "Source=""spice-channel.c:1234""", "Order=1255", "Format=""Write %zu bytes to %s""", "Arg[0]=6", "Arg[1]=""display-2:1"" (0x1eccbb0)", "Arg[2]=0", "Arg[3]=0"
+            locally
+                line_color redhat_red3
+                color "transparent"
+                line_width 25
+                translate_x -350
+                path
+                    move_to 0, 150
+                    line_to 0, 50
+                    quad_to 0, 0, 50, 0
+                    line_to 150, 0
+                    endpoints_style none, arrowhead
+        image_only_at 3,
+            line_color redhat_red1
+            color redhat_red1, 20%
+            rectangle 235, -225, 170, 50
+
+        only_at 4,
+            code_box 0, -50, 800, 400, "Dead pointer",
+                font_size 22
+                text load_text "recorder-bad.txt"
+            stamp redhat_red2, "Bad!"
+
+        only_at 5,
+            code_box 0, -50, 800, 400, "Solid pointer",
+                font_size 22
+                text load_text "recorder-good.txt"
+            stamp redhat_green1, "OK!"
+
+        record_entry X, Y -> record_entry X; record_entry Y
+        record_entry X ->
+            locally
+                line_color "lightgray"
+                line_width 2
+                color "white", 30%
+                rectangle 0, 0, 520, 45
+            text_box 0, 0, 490, 40,
+                font "Menlo", 24
+                align 0%
+                vertical_align 50%
+                color "black"
+                render X
+            translate_y -50
+
+
+// ----------------------------------------------------------------------------
+base_slide "Caveat #2: Maximum 12 arguments",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "4 elements per record entry, up to 3 entries"
+    stepping
+
+    story
+        * "Each record entry can hold up to 4 arguments"
+        * "Existing macros support only up to 3 entries"
+        * "Easy to extend, but annoying code to write"
+
+    right_picture
+        only_at 1,
+            code_box 0, 0, 900, 500, "Recorder entry",
+                font_size 18
+                text load_text "recorder-entry.txt"
+        only_at 3,
+            code_box 0, 0, 800, 800, "recorder.h",
+                font_size 14
+                text load_text "recorder-macros.txt"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Defining and declaring recorders",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Self-documented description of the recorder purpose and size"
+    stepping
+
+    story
+        * { text "The "; code "RECORDER"; text " macro defines a recorder" }
+        ** "Defines the recorder name and size"
+        ** "Self-documentation string (to list recorders)"
+
+        paragraph " "
+        * { text "The "; code "RECORDER_DECLARE"; text " macro declares a recorder" }
+        ** "Should be used in header files"
+
+    right_picture
+        recorder_listing_Y -> 200 * fade_at(smooth_step, 3)
+        only_at 1..3,
+            code_box -50, recorder_listing_Y, 900, 400, "Recorder definition",
+                font_size 30
+                text load_text "recorder-definition.txt"
+        only_at 2,
+            line_color redhat_red1
+            color redhat_red1, 20%
+            line_width 2
+            rectangle -170, 25 + recorder_listing_Y, 350, 100 + 10 * sin (5 * time)
+        only_at 3,
+            code_box 50, -100, 800, 450, "Recorder help",
+                font_size 20
+                text load_text "recorder-help.txt"
+            line_color redhat_green1
+            color redhat_green1, 20%
+            line_width 2
+            rectangle 180, 25 + recorder_listing_Y, 350, 100 + 10 * sin (5 * time)
+            rectangle 40, -270, 650, 50 + 5 * cos (5 * time)
+        only_at 4..5,
+            code_box -80, 120, 900, 500, "Recorder declaration",
+                font_size 24
+                text load_text "recorder-declaration.txt"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Dumping the recorder",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "List recorded entries, sorted by creation order"
+    stepping
+
+    story
+        * { text "Use "; code "recorder_dump()"; text " to explicitly dump the recorder" }
+        ** "Variant selecting recorder(s) to dump using regexp"
+        ** "Callback to select how to ""print"""
+        ** "Callback to format record entries"
+
+        paragraph " "
+        * { text "Dump on signals with "; code "recorder_dump_on_common_signals()" }
+        ** "First argument is bitmask of signals to enable"
+        ** "Second argument is bitmask of signals to disable"
+        ** "Values (0,0) enable a configurable default set"
+
+    right_picture
+        only_at 1,
+            code_box -350, -120, 1400, 400, "Crash dump",
+                font_size 16
+                text load_text "crash.txt"
+
+        only_at 2,
+            code_box -350, -80, 1400, 300, "Filtered dump",
+                font_size 30
+                text load_text "recorder-dump-for.txt"
+
+        only_at 3,
+            code_box -350, -60, 1400, 200, "Output configuration",
+                font_size 28
+                text load_text "recorder-output-configuration.txt"
+
+        only_at 4,
+            code_box -350, -80, 1400, 200, "Format configuration",
+                font_size 30
+                text load_text "recorder-format-configuration.txt"
+
+        only_at 5..8,
+            code_box 0, -200, 800, 200, "Dump on signals",
+                font_size 30
+                text load_text "recorder-dump-on-signals.txt"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Tracing",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Trace execution by showing events as they happen"
+    stepping
+
+    story
+        * { text "Activate traces with "; code "RECORDER_TRACES"; text " environment variables" }
+        ** "Space/colon-separated list of traces to activate"
+        ** "Use regular expressions to select groups of related traces"
+        ** "Applications can define their own variables and behaviors"
+
+        paragraph " "
+        * { text "Executed "; code "RECORD"; text " statements for active recorders are dumped immediately" }
+
+        paragraph " "
+        * { text "Can be programmatically configured with "; code "recorder_trace_set" }
+
+    right_picture
+        only_at 1..4,
+            code_box -350, -200, 1400, 300, "Activating recorder traces",
+                font_size 30
+                paragraph "% RECORDER_TRACES='channel_write' spicy -h turbo -p 5900"
+                at_step 2
+                paragraph "% RECORDER_TRACES='channel_write:channel_read' spicy -h turbo -p 5900"
+                paragraph "% RECORDER_TRACES='channel_write channel_read' spicy -h turbo -p 5900"
+                at_step 3
+                paragraph "% RECORDER_TRACES='channel.*' spicy -h turbo -p 5900"
+                at_step 4
+                paragraph "% SPICE_TRACES='channel_write' spicy -h turbo -p 5900"
+        only_at 5,
+            code_box -350, -200, 1400, 250, "Traces output",
+                font_size 24
+                text load_text "recorder-traces-output.txt"
+
+        only_at 6,
+            code_box -350, -280, 1400, 220, "Programmatic tracing configuration",
+                font_size 30
+                paragraph "recorder_trace_set("".*_warning"");"
+                paragraph "recorder_trace_set(getenv(""SPICE_TRACES""));"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Recorder dynamic configuration (tweaks)",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Dynamically configurable values to tweak recorder or program behavior"
+    stepping
+
+    story
+        * "Configuration parameters, for the recorder or anything else"
+        ** { text "Use "; code "RECORDER_TRACE(name)"; text " or "; code "RECORDER_TWEAK(name)"; text " to access value" }
+        ** { text "Use the "; code "name=value"; text " syntax in environment variable to set new value" }
+        ** { text "Using the "; code "name"; text " alone sets value to "; code "1" }
+        ** { text "You can disable a trace with "; code "name=0" }
+
+        paragraph " "
+        * "There is a configurable value associated to each recorder"
+        ** { text "The "; code "RECORDER_TWEAK_DEFINE"; text " macro adds a tweak without a recorder" }
+
+
+    right_picture
+        only_at 1..2,
+            code_box -350, -120, 1400, 400, "Using tweaks",
+                font_size 30
+                text load_text "recorder-tweak.txt"
+
+        only_at 3..5,
+            code_box -350, -200, 1400, 250, "Configuring tweaks",
+                font_size 30
+                paragraph "% RECORDER_TRACES='gst_queue_max_length=400' spicy -h turbo -p 5900"
+                at_step 4
+                paragraph "% RECORDER_TRACES='channel_write'   spicy -h turbo -p 5900"
+                paragraph "% RECORDER_TRACES='channel_write=1' spicy -h turbo -p 5900"
+                at_step 5
+                paragraph "% RECORDER_TRACES='channel_write=0' spicy -h turbo -p 5900"
+
+        only_at 6..7,
+            code_box -350, -200, 1400, 220, "Accessing recorder parameter",
+                font_size 30
+                at_step 7
+                paragraph "RECORDER_TWEAK_DEFINE(recorder_signals, MASK, ""Signals to dump"");"
+                show -1
+                at_step 6
+                paragraph "intptr_t value = RECORDER_TRACE(channel_write);"
+                at_step 7
+                paragraph "intptr_t mask  = RECORDER_TwEAK(recorder_signals);"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Recorder exporting and graphing",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Using recorder instrumentation to graph real-time data"
+    stepping
+
+    story
+        * "Recorder entries can be used to graph values over time"
+        ** "All recorder entries must hold similar values in the same order"
+        ** { text "They need to be "; red "exported"; text " first, to name data ""channels""" }
+
+        paragraph " "
+        * "Data is exported to shared memory"
+        ** "An example tool based on Qt5.9 in the recorder directory"
+        ** "Use the same name used to export data channels"
+        ** "Tested with tens of thousands of data points per second"
+
+    right_picture
+        only_at 1..3,
+            translate_y 260 * fade_at(smooth_step, 2)
+            image "170712-AccumulatingQueue.png"
+
+        only_at 2..3,
+            code_box -300, -80, 1400, 220, "Entries holding compatible data",
+                font_size 30
+                paragraph load_text "recorder-single-format.txt"
+        only_at 3,
+            code_box -300, -280, 1400, 220, "Exporting recorder ""channels""",
+                font_size 30
+                paragraph "export RECORDER_TRACES='size_stats=frame_size,queue_length'"
+        only_at 5..7,
+            translate_y 120
+            scale 130%
+            image "170712-AccumulatingQueue.png"
+
+        only_at 5..7,
+            code_box -300, -280, 1400, 220, "Graphing tool",
+                font_size 30
+                paragraph "% recorder_scope frame_size queue_length"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Performance considerations",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Why you can leave it there all the time"
+    stepping
+
+    story
+        * { text "Calls to "; code "RECORD"; text " are fast" }
+        ** { color "xeon";      text "PC, Xeon E5-1650 v4, 3.60GHz" }
+        ** { color "macbook";   text "MacBook Pro 2016, 2,5GHz Core i7 " }
+        ** { color "pi1";       text "Raspberry Pi  ARMv6 700 MHz" }
+        ** { color "pi2";       text "Raspberry Pi2 ARMv7 900MGHz" }
+
+        paragraph " "
+        * "Lock-free recording for scalability"
+        ** { color "xeon";      text "Desktop PC, Xeon E5-1650 v4, 3.60GHz" }
+        ** { color "macbook";   text "MacBook Pro 2016, 2,5GHz Core i7 " }
+        ** { color "pi1";       text "Raspberry Pi  ARMv6 700 MHz" }
+        ** { color "pi2";       text "Raspberry Pi2 ARMv7 900MGHz" }
+
+        paragraph " "
+        * "Warning: the cost per thread increases. Memory bandwidth is the limiting factor"
+
+    right_picture
+        only_at 1..5,
+            translate -500, 350, 0
+            rotate_y 60 * fade_at(smooth_step, 5)
+            chart_axis "Duration in nanoseconds", 700, cost_chart_factor
+            cost_chart  35,   64, 1070,   726, "RECORD"
+            cost_chart  20,   20,  129,   124, "RECORD_FAST"
+            cost_chart  16,   36,  913,   675, "gettimeofday"
+            cost_chart  26,   15, 1669,   499, "mempcy (512 bytes)"
+            cost_chart  40,   61,  603,   499, "malloc (best case)"
+            cost_chart 508,  483, 3690,  5466, "malloc (worst case)"
+            cost_chart  64,   98, 2530,  1071, "snprintf"
+            cost_chart  64,   14, 4840,  2318, "fprintf to /dev/null"
+            cost_chart 751, 1334, 4509, 14730, "fprintf + fflush"
+
+        only_at 7..12,
+            translate -400, 250, 0
+            chart_axis "Duration in nanoseconds", 480, smp_chart_factor
+            smp_chart 1, 37, 60,1315,742
+            smp_chart 2, 97, 93,1076,412
+            smp_chart 4, 95, 71,1080,224
+            smp_chart 8, 59, 54,1083,224
+            smp_chart 16, 54, 50,1084,224
+            smp_chart 32, 54, 53,1372,224
+
+        cost_chart Xeon, MacBook, Pi1, Pi2, Message ->
+            text_box -280, 0, 500, 60,
+                style "story"
+                align_right
+                font_size 28
+                text Message
+            locally
+                translate_y 30
+                at_step 2
+                cost_chart_box "xeon", Xeon
+                at_step 3
+                cost_chart_box "macbook", MacBook
+                at_step 4
+                cost_chart_box "pi1", Pi1
+                at_step 5
+                cost_chart_box "pi2", Pi2
+            translate_y -80
+        cost_chart_factor -> (1 + 4 * fade_at(smooth_step, 4))
+        cost_chart_box Color, Value ->
+            color Color
+            rectangle Value/2/cost_chart_factor, 0, Value/cost_chart_factor, 10
+            translate_y -15
+
+        smp_chart Threads, Xeon, MacBook, Pi1, Pi2 ->
+            text_box -280, 0, 500, 60,
+                style "story"
+                align_right
+                font_size 28
+                text "With " & Threads & " threads"
+            locally
+                translate_y 30
+                at_step 7
+                smp_chart_box Threads, "xeon", Xeon
+                at_step 8
+                smp_chart_box Threads, "macbook", MacBook
+                at_step 9
+                smp_chart_box Threads, "pi1", Pi1
+                at_step 10
+                smp_chart_box Threads, "pi2", Pi2
+            translate_y -80
+        smp_chart_factor -> (1 + 1 * fade_at(smooth_step, 9))
+        smp_chart_box Threads, Color, Value ->
+            color Color
+            rectangle Value/2/smp_chart_factor, 0, Value/smp_chart_factor, 10
+            translate_y -15
+
+        chart_axis Title, Height, Factor ->
+            text_box 400, 50, 800, 80,
+                style "boxtitle"
+                font_size 30
+                text Title & " (grid is " & integer(50 * Factor + 0.5) & "ns)"
+            locally
+                color "lightgray"
+                for X in 0..120 loop
+                    rectangle X * 50, 40-Height/2, 2, Height
+
+color "xeon"    -> color "#820"
+color "macbook" -> color "#036"
+color "pi1"     -> color "#063"
+color "pi2"     -> color "#082"
+
+
+
+// Hanoi 20 (printing piped to wc)	320ms	180ms	19337ms	7110ms
+// Hanoi 20 (recording)	60ms	60ms	1203ms	834ms
+// Hanoi 20 (fast recording)	23ms	24ms	262ms	175ms
+
+// ----------------------------------------------------------------------------
+section_slide "Thank you",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "https://github.com/c3d/recorder"
+    stepping
+
+    picture
+        translate 600, 450, 20
+        rotate_z 8
+        scale 70%
+        texture "Fdr_sidefront.jpg"
+        color "white"
+        rounded_rectangle 0, 0, texture_width, texture_height, 80

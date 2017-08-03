@@ -1,0 +1,11 @@
+typedef struct recorder_entry
+/// ---------------------------------------------------------------------------
+///   Entry in the flight recorder.
+///----------------------------------------------------------------------------
+{
+    const char *format;         ///< Printf-style format for record
+    uintptr_t   order;          ///< Global order of events (across recorders)
+    uintptr_t   timestamp;      ///< Time at which record took place
+    const char *where;          ///< Source code location (__FILE__ : __LINE__)
+    uintptr_t   args[4];        ///< Four arguments, for a total of 8 fields
+} recorder_entry;

@@ -1,0 +1,5 @@
+RECORDER_DECLARE(channel);
+
+#define CHANNEL_DEBUG(chan, fmt, ...)                       \
+    RECORD(channel, "%s: " fmt,                             \
+           SPICE_CHANNEL(chan)->priv->name, ##__VA_ARGS__)

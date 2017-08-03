@@ -1,0 +1,9 @@
+% SPICE_TRACES='channel_write channel_read' spicy -h turbo -p 5900
+spice-channel.c:902: [92 0.217779] channel_write: Write 42 bytes to main-1:0
+spice-channel.c:915: [94 0.217928] channel_write: Wrote 42 bytes to main-1:0, total 42
+spice-channel.c:1168: [95 0.217946] channel_read: Read 16 bytes from main-1:0
+spice-channel.c:1192: [97 0.241671] channel_read: Read 16 bytes from main-1:0, total 16
+spice-channel.c:1168: [99 0.241717] channel_read: Read 186 bytes from main-1:0
+spice-channel.c:1192: [101 0.241735] channel_read: Read 186 bytes from main-1:0, total 202
+spice-channel.c:902: [109 0.241768] channel_write: Write 4 bytes to main-1:0
+spice-channel.c:915: [111 0.241854] channel_write: Wrote 4 bytes to main-1:0, total 46

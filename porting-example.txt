@@ -1,0 +1,11 @@
+#ifndef SPICE_RECORD_DOMAIN
+#define SPICE_RECORD_DOMAIN     spice
+#endif
+
+#ifndef SPICE_INFO_RECORDER
+#define SPICE_INFO_RECORDER      G_PASTE(SPICE_RECORD_DOMAIN,_info)
+#endif // SPICE_INFO_RECORDER
+
+#define spice_info(format, ...) G_STMT_START {                \
+        RECORD(SPICE_INFO_RECORDER, format, ## __VA_ARGS__);  \
+    } G_STMT_END

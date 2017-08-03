@@ -1,0 +1,5 @@
+extern unsigned recorder_dump(void);
+extern unsigned recorder_dump_for(const char *what);
+extern unsigned recorder_sort(const char *what,
+                              recorder_format_fn format,
+                              recorder_show_fn show, void *show_arg);

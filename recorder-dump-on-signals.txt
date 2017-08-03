@@ -1,0 +1,1 @@
+recorder_dump_on_common_signals(0, 0);

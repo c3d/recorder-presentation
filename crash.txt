@@ -1,0 +1,15 @@
+spice-channel.c:1190: [1253 3.523256] read_stats: Read 129130434.78 bytes/s, total 1519404, 43478.26 loops/s, avg duration 826086.96 us,
+spice-channel.c:1192: [1254 3.523256] channel_read: Read 2970 bytes from display-2:1, total 109017
+spice-session.c:2326: [1255 3.523262] mm_time: Get mm_time=1719763931, time_at_clock=11065284931, delta=3324
+channel-display.c:1487: [1256 3.523262] channel: display-2:1: stream data too late by 1554 ms (ts: 1719762377, mmtime: 1719763931), dropping
+channel-display-gst.c:577: [1257 3.523264] gst_queue_stats: Frame size 2958 length 5
+channel-display-gst.c:240: [1258 3.532011] new_sample: Frame timestamp 1415
+spice-session.c:2326: [1259 3.532014] mm_time: Get mm_time=1719763940, time_at_clock=11065284931, delta=3333
+channel-display-gst.c:170: [1260 3.532015] gst_schedule_frame: Schedule frame now=1719763940 timer_id=0
+channel-display-gst.c:182: [1261 3.532015] gst_schedule_frame_time: Got frame 0x7fc18643b840 time=1719762106 now=1719763940 queue length=1
+channel-display-gst.c:195: [1262 3.532025] frame_timer: Id 406 scheduled immediate display
+channel-display-gst.c:150: [1263 3.532154] display_frame: Display 0x7fc18643b840 ts 1719762106 size 1600x1200
+spice-session.c:2326: [1264 3.533166] mm_time: Get mm_time=1719763941, time_at_clock=11065284931, delta=3334
+channel-display-gst.c:170: [1265 3.533166] gst_schedule_frame: Schedule frame now=1719763941 timer_id=0
+recorder/recorder.c:1472: [1266 3.623854] signals: Received signal Information request: 29 (29) si_addr=0x7fffdc67f34a, dumping recorder
+recorder/recorder.c:716: [1267 3.623877] recorders: Recorder dump
