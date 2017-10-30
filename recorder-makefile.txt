@@ -4,6 +4,6 @@ libspice_common_la_SOURCES =            \
         [...]
         recorder/recorder.c             \
         recorder/recorder.h             \
-        recorder/ring.c                 \
-        recorder/ring.h                 \
+        recorder/recorder_ring.c        \
+        recorder/recorder_ring.h        \
         $(NULL)

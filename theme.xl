@@ -121,8 +121,8 @@ theme_background "RedHat", "main" ->
             for I in 0..8 loop
                 rectangle 10 * I, 10 * I
         texture_transform
-            translate -page_time * 0.2 mod 1, 0.0, 0
-            scale 20 + 10 * sin (0.1 * page_time)
+            translate -seconds_time * 0.2 mod 1, 0.0, 0
+            scale 20 + 10 * sin (0.1 * seconds_time)
         texture_wrap true, true
         color redhat_red2
         redhat_triangle 800, 860
@@ -460,19 +460,21 @@ tao "grey"                              -> "#555"
 //
 // ============================================================================
 
-TOTAL_DURATION -> 1200 // 20 minutes
+TOTAL_DURATION -> 300 // 20 minutes
 START_TIME     -> 0.0
 
 key "Right" -> skip 1
 key "Space" -> skip 1
 key "Left"  -> skip -1
+seconds_time -> hours * 3600 + minutes * 60 + seconds
 key "Backspace" ->
-    START_TIME := time
+    START_TIME := seconds_time
     goto_page 1
 once
-    START_TIME := time
+    START_TIME := seconds_time
 
 contents 0,
     color "lightgray"
-    rectangle 0, -482, 1700 * (time - START_TIME) / TOTAL_DURATION, 2
-    rectangle 0, -478, 1700 * page_number / page_count, 2
+    rectangle 0, -482, 1700 * (seconds_time - START_TIME) / TOTAL_DURATION, 2
+    if page_count > 0 then
+        rectangle 0, -478, 1700 * page_number / page_count, 2
